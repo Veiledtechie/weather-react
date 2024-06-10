@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import axios from "axios";
+import "./App.css";
 
 function App() {
+  const [city, setCity] = useState(" ");
+  const [message, setMessage] = useState(" ");
+
+  function showTemperature(response) {
+    setMessage(
+      `It is currently ${Math.round(response.data.main.temp)}℃ in ${city}`
+    );
+  }
+  function handleSubmit(event) {
+    event.preventDefault();
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=64469ac67e6dc941feb5b50915a18dc7&units=metric`;
+    axios.get(apiUrl).then(showTemperature);
+  }
+  function updateChange(event) {
+    setCity(event.target.value);
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1 className="mt-5">Weather Search Engine</h1>
+
+      <form onSubmit={handleSubmit}>
+        <input
+          className="mt-3"
+          type="text"
+          placeholder="Enter a city"
+          onChange={updateChange}
+        />
+        <input type="submit" value="Search" />
+      </form>
+      <h2>{message}</h2>
     </div>
   );
 }
